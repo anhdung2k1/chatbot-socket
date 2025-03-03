@@ -34,12 +34,41 @@ public class Log {
     }
 
     private static String formatMessage(String message, Object... args) {
-        if (args.length > 0) {
-            message = message.replace("{}", "%s");
-            return String.format(message, args);
+        if (args.length == 0) {
+            return message;
         }
-        return message;
-    }
+    
+        // Convert '{}' placeholders while preserving escaped '{{}}'
+        StringBuilder result = new StringBuilder();
+        int lastPos = 0, argIndex = 0;
+    
+        for (int i = 0; i < message.length() - 1; i++) {
+            if (message.charAt(i) == '{' && message.charAt(i + 1) == '}') {
+                // Replace '{}' with the corresponding argument
+                result.append(message, lastPos, i);
+                if (argIndex < args.length) {
+                    result.append(args[argIndex] != null ? args[argIndex] : "null");
+                    argIndex++;
+                } else {
+                    // If no arguments are left, keep '{}' as it is
+                    result.append("{}");
+                }
+                lastPos = i + 2;
+            } else if (message.charAt(i) == '{' && message.charAt(i + 1) == '{') {
+                // Preserve escaped '{{' (convert '{{' to '{')
+                result.append(message, lastPos, i).append('{');
+                lastPos = i + 2;
+            } else if (message.charAt(i) == '}' && message.charAt(i + 1) == '}') {
+                // Preserve escaped '}}' (convert '}}' to '}')
+                result.append(message, lastPos, i).append('}');
+                lastPos = i + 2;
+            }
+        }
+        // Append the rest of the message
+        result.append(message.substring(lastPos));
+    
+        return result.toString();
+    }    
 
     public static void info(String message, Object... args) {
         logger.info(formatMessage(message, args));

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConversationsWrapper {
-    public List<Conversation> conversations;
+    private List<Conversation> conversations;
 
     public ConversationsWrapper() {
         this.conversations = new ArrayList<>();
@@ -19,7 +19,7 @@ public class ConversationsWrapper {
     }
 
     public void setConversations(List<Conversation> conversations) {
-        this.conversations = conversations;
+        this.conversations = conversations != null ? conversations : new ArrayList<>();
     }
 
     @Override
@@ -49,6 +49,6 @@ public class ConversationsWrapper {
 
     @Override
     public String toString() {
-        return "ConversationsWrapper [conversations=" + conversations.toString() + "]";
+        return "ConversationsWrapper [conversations=" + (conversations != null ? conversations.toString() : "null") + "]";
     }
 }

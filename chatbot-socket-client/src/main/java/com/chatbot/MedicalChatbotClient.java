@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -69,22 +70,55 @@ public class MedicalChatbotClient {
     }
 
     private void sendQuestion(String question) {
-        out.println(question);
-        Log.info("Sent question to server: {}", question);
-        try {
-            String response = in.readLine();
-            if (response != null) {
-                chatArea.append("You: " + question + "\n");
-                chatArea.append("Chatbot: " + response + "\n\n");
-                Log.info("Received response from server: {}", response);
-            } else {
-                Log.warn("Received null response from server.");
+        // Update UI immediately to show the question
+        SwingUtilities.invokeLater(() -> chatArea.append("You: " + question + "\n"));
+    
+        // Send question and receive response in a background thread
+        new Thread(() -> {
+            if (socket == null || socket.isClosed() || !socket.isConnected() || out == null) {
+                SwingUtilities.invokeLater(() -> 
+                    chatArea.append("Error: Not connected to server.\n\n"));
+                return;
             }
-        } catch (IOException e) {
-            chatArea.append("Error: Unable to communicate with the server.\n");
-            Log.error("Error while communicating with the server: {}", e.getMessage());
-        }
+    
+            out.println(question);
+            Log.info("Sent question to server: {}", question);
+    
+            try {
+                // Set a timeout for the socket if not already set
+                try {
+                    if (socket.getSoTimeout() == 0) {
+                        socket.setSoTimeout(30000); // 30 seconds timeout
+                    }
+                } catch (IOException e) {
+                    Log.warn("Failed to set socket timeout: {}", e.getMessage());
+                }
+    
+                String response = in.readLine();
+                if (response != null) {
+                    SwingUtilities.invokeLater(() -> {
+                        chatArea.append("Chatbot: " + response + "\n\n");
+                        // Scroll to the bottom to show the latest message
+                        chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                    });
+                    Log.info("Received response from server: {}", response);
+                } else {
+                    Log.warn("Received null response from server.");
+                    SwingUtilities.invokeLater(() -> 
+                        chatArea.append("Error: Server disconnected.\n\n"));
+                }
+            } catch (SocketTimeoutException e) {
+                Log.error("Timeout waiting for server response: {}", e.getMessage());
+                SwingUtilities.invokeLater(() -> 
+                    chatArea.append("Error: Server response timeout.\n\n"));
+            } catch (IOException e) {
+                Log.error("Error while communicating with the server: {}", e.getMessage());
+                SwingUtilities.invokeLater(() -> 
+                    chatArea.append("Error: Unable to communicate with the server.\n\n"));
+            }
+        }).start();
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MedicalChatbotClient::new);

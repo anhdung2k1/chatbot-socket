@@ -2,6 +2,7 @@ package com.chatbot;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chatbot.model.Conversation;
@@ -29,23 +30,27 @@ public class MedicalChatbot {
     }
 
     public static String getAnswer(String question) {
-        if (conversationsData == null || conversationsData.conversations.isEmpty()) {
+        if (conversationsData == null || conversationsData.getConversations().isEmpty()) {
             return Constants.MSG_NOT_FOUND;
         }
     
         // Normalize user input for better matching
         String lowerQuestion = question.toLowerCase().trim();
     
-        for (Conversation conversation : conversationsData.conversations) {
+        for (Conversation conversation : conversationsData.getConversations()) {
             // Allow partial matching for better accuracy
-            if (lowerQuestion.contains(conversation.question.toLowerCase())) {
-                return conversation.answer;
+            if (lowerQuestion.contains(conversation.getQuestion().toLowerCase())) {
+                return conversation.getAnswer();
             }
         }
         return Constants.MSG_NOT_FOUND;
     }    
 
     public static List<String> getAllQuestions() {
-        return conversationsData.conversations.stream().map(c -> c.question).toList();
+        if (conversationsData == null || conversationsData.getConversations() == null) {
+            Log.warn("Conversation data is null when trying to get all questions");
+            return new ArrayList<String>();
+        }
+        return conversationsData.getConversations().stream().map(c -> c.getQuestion()).toList();
     }
 }

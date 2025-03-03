@@ -1,8 +1,8 @@
 package com.chatbot.model;
 
 public class Conversation {
-    public String question;
-    public String answer;
+    private String question;
+    private String answer;
 
     public Conversation() {
         this.question = "";
