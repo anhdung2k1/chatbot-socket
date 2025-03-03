@@ -6,17 +6,17 @@ import java.util.List;
 
 import com.chatbot.model.Conversation;
 import com.chatbot.model.ConversationsWrapper;
+import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MedicalChatbot {
     private static ConversationsWrapper conversationsData;
-    private final static String MSG_NOT_FOUND = "Sorry, I don't have an answer for that question.";
 
     static {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            InputStream inputStream = MedicalChatbot.class.getClassLoader().getResourceAsStream("chatbot-medical.json");
+            InputStream inputStream = MedicalChatbot.class.getClassLoader().getResourceAsStream(Constants.CHATBOT_MEDICAL_FILE);
 
             if (inputStream == null) {
                 throw new IOException("File not found in resources.");
@@ -30,7 +30,7 @@ public class MedicalChatbot {
 
     public static String getAnswer(String question) {
         if (conversationsData == null || conversationsData.conversations.isEmpty()) {
-            return MSG_NOT_FOUND;
+            return Constants.MSG_NOT_FOUND;
         }
     
         // Normalize user input for better matching
@@ -42,7 +42,7 @@ public class MedicalChatbot {
                 return conversation.answer;
             }
         }
-        return MSG_NOT_FOUND;
+        return Constants.MSG_NOT_FOUND;
     }    
 
     public static List<String> getAllQuestions() {

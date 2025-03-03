@@ -17,11 +17,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
 
 public class MedicalChatbotClient {
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int PORT = 12345;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -29,11 +28,11 @@ public class MedicalChatbotClient {
 
     public MedicalChatbotClient() {
         try {
-            socket = new Socket(SERVER_ADDRESS, PORT);
+            socket = new Socket(Constants.SERVER_HOST, Constants.SERVER_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
             chatArea = new JTextArea();
-            Log.info("Connected to Medical Chatbot Server at {}:{}", SERVER_ADDRESS, PORT);
+            Log.info("Connected to Medical Chatbot Server at {}:{}", Constants.SERVER_HOST, Constants.SERVER_PORT);
 
             // Read and display the welcome message
             String welcomeMessage = in.readLine();
