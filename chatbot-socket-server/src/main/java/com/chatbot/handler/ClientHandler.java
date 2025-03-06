@@ -46,7 +46,7 @@ public class ClientHandler implements Runnable {
                 socket.close();
                 Log.info("Client disconnected: {}:{}", socket.getInetAddress(), socket.getPort());
             } catch (IOException e) {
-                Log.warn("Error closing client socket: {}", socket.getInetAddress(), e);
+                Log.error("Error closing client socket: {}", socket.getInetAddress(), e);
             }
         }
     }

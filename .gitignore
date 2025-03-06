@@ -43,6 +43,9 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 .vscode
+
+### Intelligent J
+.idea/
 # Local History for Visual Studio Code
 .history/
 

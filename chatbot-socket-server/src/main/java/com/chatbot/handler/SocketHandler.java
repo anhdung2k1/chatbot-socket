@@ -3,8 +3,9 @@ package com.chatbot.handler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.chatbot.utils.Constants;
@@ -15,9 +16,17 @@ import com.chatbot.utils.Log;
  */
 public class SocketHandler {
     private ServerSocket serverSocket;
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    private final ThreadPoolExecutor threadPool;
 
     public SocketHandler() {
+        threadPool = new ThreadPoolExecutor(
+                Constants.THREAD_POOL_ALIVE,
+                Constants.THREAD_POOL_MAX,
+                Constants.THREAD_IDLE_TIME,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
         try {
             serverSocket = new ServerSocket(Constants.SERVER_PORT);
             // Add shutdown hook for graceful termination
@@ -51,6 +60,8 @@ public class SocketHandler {
                 Socket clientSocket = serverSocket.accept();
                 Log.info("New client connected: {}", clientSocket.getInetAddress());
                 handleClient(clientSocket);
+
+                Log.info("Active Threads: {}", threadPool.getActiveCount());
             } catch (IOException e) {
                 Log.error("Error accepting client connection: {}", e.getMessage());
                 // If the socket was closed intentionally (during shutdown), break the loop
@@ -72,21 +83,19 @@ public class SocketHandler {
      * Cleans up resources when shutting down the server
      */
     private void cleanup() {
-        if (threadPool != null) {
-            threadPool.shutdown();
-            try {
-                // Wait a while for existing tasks to terminate
-                if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
-                    threadPool.shutdownNow();
-                    if (!threadPool.awaitTermination(60, TimeUnit.SECONDS))
-                        Log.error("Thread pool did not terminate");
-                }
-            } catch (InterruptedException e) {
-                // (Re-)Cancel if current thread also interrupted
+        threadPool.shutdown();
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
                 threadPool.shutdownNow();
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
+                if (!threadPool.awaitTermination(60, TimeUnit.SECONDS))
+                    Log.error("Thread pool did not terminate");
             }
+        } catch (InterruptedException e) {
+            // (Re-)Cancel if current thread also interrupted
+            threadPool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -103,6 +112,8 @@ public class SocketHandler {
             cleanup();
         } catch (IOException e) {
             Log.error("Error closing server: {}", e.getMessage());
+        } finally {
+            Log.info("Server shutdown completed.");
         }
     }
 }
