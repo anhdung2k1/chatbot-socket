@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  builder:
+    image: maven:3.8.5-openjdk-17
+    container_name: chatbot-builder
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: mvn clean install -DskipTests
+    networks:
+      - sk-net
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: chatbot
+      MYSQL_USER: chatbot
+      MYSQL_PASSWORD: chatbot
+    ports:
+      - "3306:3306"
+    volumes:
+      - chatbot_db_data:/var/lib/mysql
+      - ./sql/chatbot.sql:/docker-entrypoint-initdb.d/chatbot.sql
+    networks:
+      - sk-net
+
+  authentication:
+    image: authentication:latest
+    container_name: sk_authentication
+    build:
+      context: ./authentication
+      dockerfile: ./Dockerfile
+    ports:
+      - 9090:9090
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=chatbot
+      - DB_USERNAME=chatbot
+      - DB_PASSWORD=chatbot
+    restart: always
+    networks:
+      - sk-net
+    depends_on:
+      - mysql
+
+  server:
+    image: server:latest
+    container_name: sk_server
+    build:
+      context: ./chatbot-socket-server
+      dockerfile: Dockerfile
+    depends_on:
+      - builder
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: chatbot
+      DB_PASSWORD: chatbot
+      DB_NAME: chatbot
+    ports:
+      - "8000:8000"
+    networks:
+      - sk-net
+
+volumes:
+  chatbot_db_data:
+
+networks:
+  sk-net:
+    driver: bridge
+    ipam:
+      driver: default

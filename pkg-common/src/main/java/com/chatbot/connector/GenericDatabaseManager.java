@@ -1,9 +1,17 @@
 package com.chatbot.connector;
 
-import com.chatbot.utils.Log;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.sql.*;
-import java.util.*;
+import com.chatbot.utils.Log;
 
 /**
  * Generic Database Manager to perform CRUD operations on any table.
@@ -50,6 +58,8 @@ public class GenericDatabaseManager {
      * @param whereColumn The column used for filtering.
      * @param whereValue The value to match.
      * @return A map representing the record, or null if not found.
+     * To retrieve all information from table
+     * Eg: SELECT * FROM questions WHERE question = "How can I prevent catching a cold?"
      */
     public static Map<String, Object> get(String tableName, String whereColumn, Object whereValue) {
         String query = "SELECT * FROM " + tableName + " WHERE " + whereColumn + " = ? LIMIT 1";
@@ -70,6 +80,38 @@ public class GenericDatabaseManager {
         }
         return null;
     }
+
+    /**
+     * Retrieves a record from any table by a specific column value.
+     *
+     * @param tableName The table name.
+     * @param attributes The attributes name
+     * @param whereColumn The column used for filtering.
+     * @param whereValue The value to match.
+     * @return A map representing the record, or null if not found.
+     * To retrieve attributes information from table
+     * Eg: SELECT question FROM questions WHERE question = "How can I prevent catching a cold?"
+     */
+    public static Map<String, Object> get(String tableName, String attributes, String whereColumn, Object whereValue) {
+        String query = "SELECT" + attributes + "FROM " + tableName + " WHERE " + whereColumn + " = ? LIMIT 1";
+
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            assert conn != null;
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+
+                stmt.setObject(1, whereValue);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return extractRow(rs);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Log.error("Error retrieving from table {}: {}", tableName, e.getMessage());
+        }
+        return null;
+    }
+
 
     /**
      * Updates a record in any table.

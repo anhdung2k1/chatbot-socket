@@ -48,7 +48,7 @@ public class MedicalChatbotClient {
 
         // Initialize GUI
         JFrame frame = new JFrame("Medical Chatbot");
-        frame.setSize(400, 500);
+        frame.setSize(1200, 1000);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
