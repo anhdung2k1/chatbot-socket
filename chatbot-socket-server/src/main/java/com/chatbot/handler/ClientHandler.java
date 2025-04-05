@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import com.chatbot.MedicalChatbot;
+import com.chatbot.ChatBotBase;
 import com.chatbot.utils.Log;
 
 public class ClientHandler implements Runnable {
@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
-                String answer = MedicalChatbot.getAnswer(question);
+                String answer = ChatBotBase.getAnswer(question);
                 out.println(answer);
                 out.flush(); // Ensure the answer is immediately sent to the client
                 Log.info("Client asked: \"{}\" | Responded: \"{}\"", question, answer);

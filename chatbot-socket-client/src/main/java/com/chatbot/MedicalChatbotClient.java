@@ -58,7 +58,7 @@ public class MedicalChatbotClient {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(0, 1));
 
-        List<String> questions = MedicalChatbot.getAllQuestions();
+        List<String> questions = ChatBotBase.getAllQuestions();
         for (String question : questions) {
             JButton button = new JButton(question);
             button.addActionListener((ActionEvent e) -> sendQuestion(question));

@@ -5,11 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.chatbot.connector.GenericDatabaseManager;
 import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
 
-public class MedicalChatbot {
+public class ChatBotBase {
 
     /**
      * Fetches the answer from the database based on the user's question.
@@ -24,13 +23,8 @@ public class MedicalChatbot {
 
         // Normalize input to lowercase for better matching
         String lowerQuestion = question.toLowerCase().trim();
-
-        // Retrieve matching record from database
-        Map<String, Object> record = GenericDatabaseManager.get("questions", "question", lowerQuestion);
-
-        if (record != null && record.containsKey("answer")) {
-            return record.get("answer").toString();
-        }
+        
+       
         return Constants.MSG_NOT_FOUND;
     }
 
@@ -41,18 +35,6 @@ public class MedicalChatbot {
      */
     public static List<String> getAllQuestions() {
         List<String> questions = new ArrayList<>();
-        List<Map<String, Object>> records = GenericDatabaseManager.getAll("questions");
-
-        if (records.isEmpty()) {
-            Log.warn("No questions found in the database.");
-            return questions;
-        }
-
-        for (Map<String, Object> record : records) {
-            if (record.containsKey("question")) {
-                questions.add(record.get("question").toString());
-            }
-        }
         return questions;
     }
 
@@ -63,17 +45,18 @@ public class MedicalChatbot {
      * @param answer   The corresponding chatbot response.
      * @return true if the operation is successful, false otherwise.
      */
-    public static boolean addQuestion(String question, String answer) {
+    public static boolean addQuestion(int subject_id, String question, String answer) {
         if (question == null || question.trim().isEmpty() || answer == null || answer.trim().isEmpty()) {
             Log.warn("Invalid question or answer. Cannot add to database.");
             return false;
         }
 
         Map<String, Object> insertData = new HashMap<>();
+        insertData.put("subject_id", subject_id);
         insertData.put("question", question.trim());
         insertData.put("answer", answer.trim());
 
-        return GenericDatabaseManager.insert("questions", insertData);
+        return true;
     }
 
     /**
@@ -92,7 +75,7 @@ public class MedicalChatbot {
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("answer", newAnswer.trim());
 
-        return GenericDatabaseManager.update("questions", updateData, "question", question.trim());
+        return true;
     }
 
     /**
@@ -107,6 +90,6 @@ public class MedicalChatbot {
             return false;
         }
 
-        return GenericDatabaseManager.delete("questions", "question", question.trim());
+        return true;
     }
 }
