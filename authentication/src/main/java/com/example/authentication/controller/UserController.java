@@ -12,7 +12,7 @@ import com.example.authentication.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
-@RequestMapping("/api/v1/authentications/users")
+@RequestMapping("/api/v1/authentication/user")
 @RequiredArgsConstructor
 public class UserController {
 

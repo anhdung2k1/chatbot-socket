@@ -32,8 +32,8 @@ public class SecurityConfiguration {
     private String[] allowedOrigins;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-        "/api/v1/authentications/signin",
-        "/api/v1/authentications/signup",
+        "/api/v1/authentication/signin",
+        "/api/v1/authentication/signup",
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/actuator/**"
