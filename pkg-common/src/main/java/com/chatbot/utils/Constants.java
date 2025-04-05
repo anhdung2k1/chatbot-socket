@@ -17,6 +17,12 @@ public class Constants {
     public static final String DB_USERNAME = getEnv("DB_USERNAME", "chatbot");
     public static final String DB_PASSWORD = getEnv("DB_PASSWORD", "chatbot");
     public static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s", DB_HOST, DB_PORT, DB_NAME);
+
+    // API Config
+    public static final String API_HOST = getEnv("API_HOST", "localhost");
+    public static final int API_PORT = getEnvInt("API_PORT", 9090);
+    public static final String API_URL = String.format("http://%s:%s/api/v1/authentication", API_HOST, API_PORT);
+
     /**
      * Helper method to get environment variable as int
      */

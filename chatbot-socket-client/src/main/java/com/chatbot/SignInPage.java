@@ -1,15 +1,12 @@
 package com.chatbot;
 
 import javax.swing.*;
+
+import com.chatbot.utils.Log;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 public class SignInPage {
     private JFrame frame;
@@ -117,25 +114,9 @@ public class SignInPage {
 
     private boolean authenticate(String username, String password) {
         try {
-            URL url = new URL("http://localhost:9090/api/v1/authentications/signin");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            String jsonInputString = String.format("{\"userName\":\"%s\", \"password\":\"%s\"}", username, password);
-
-            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8))) {
-                writer.write(jsonInputString);
-            }
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                Scanner scanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name());
-                String responseBody = scanner.useDelimiter("\\A").next();
-                scanner.close();
-                return true; // Sign-in successful
-            }
+            String response = ChatBotBase.signInRequest(username, password);
+            Log.info("Sign In Response: {}", response);
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

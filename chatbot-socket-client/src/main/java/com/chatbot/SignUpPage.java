@@ -50,7 +50,8 @@ public class SignUpPage {
         panel.add(confirmPasswordLabel);
         confirmPasswordField = new JPasswordField();
         confirmPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
-        confirmPasswordField.setBorder(BorderFactory.createLineBorder(new Color(34, 193, 195), 2)); // Border với màu xanh
+        confirmPasswordField.setBorder(BorderFactory.createLineBorder(new Color(34, 193, 195), 2)); // Border với màu
+                                                                                                    // xanh
         panel.add(confirmPasswordField);
 
         // Nút Đăng ký với màu sắc gradient và bo tròn góc
@@ -76,7 +77,8 @@ public class SignUpPage {
         signInRedirectButton.setBorderPainted(false);
         signInRedirectButton.setContentAreaFilled(false);
         signInRedirectButton.setOpaque(true);
-        signInRedirectButton.setBorder(BorderFactory.createLineBorder(new Color(255, 153, 51), 2)); // Bo tròn góc cho button
+        signInRedirectButton.setBorder(BorderFactory.createLineBorder(new Color(255, 153, 51), 2)); // Bo tròn góc cho
+                                                                                                    // button
         panel.add(signInRedirectButton);
 
         // Thêm panel vào frame
@@ -134,11 +136,13 @@ public class SignUpPage {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                JOptionPane.showMessageDialog(frame, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Account created successfully!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 // Tự động đăng nhập ngay sau khi đăng ký thành công
                 if (authenticate(username, password)) {
-                    JOptionPane.showMessageDialog(frame, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Login successful!", "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose(); // Đóng cửa sổ đăng ký
                     new MedicalChatbotClient(); // Mở trang chính sau khi đăng nhập thành công
                 } else {
