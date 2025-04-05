@@ -21,7 +21,7 @@ public class AccountController {
 
     // ✅ Public: Sign Up (Anyone can create an account)
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> createAccount(@RequestBody Accounts account) throws Exception { 
+    public ResponseEntiAuthenticationResponse> createAccount(@RequestBody Accounts account) throws Exception {
         return ResponseEntity.ok(accountService.createAccount(account));
     }
 

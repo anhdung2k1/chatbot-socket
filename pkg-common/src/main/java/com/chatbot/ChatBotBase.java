@@ -7,13 +7,35 @@ import java.util.Map;
 
 import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
+import com.chatbot.utils.HTTPConnect;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ChatBotBase {
+    private static HTTPConnect httpConnect = new HTTPConnect();
 
-    /**
+    public static String signInRequest(String userName, String password) throws Exception {
+        if (userName == null || password == null) {
+            throw new Exception("Username and password must not null");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode payload = objectMapper.createObjectNode()
+                .put("userName", userName)
+                .put("password", password);
+
+        String jsonPayload = objectMapper.writeValueAsString(payload);
+        String result = httpConnect.authenticate(Constants.API_URL + "/signin", jsonPayload);
+        return result;
+    }
+
+    /*
      * Fetches the answer from the database based on the user's question.
-     *
+     * 
+     * 
      * @param question The question asked by the user.
+     * 
      * @return The chatbot's response, or a default message if not found.
      */
     public static String getAnswer(String question) {
@@ -23,8 +45,7 @@ public class ChatBotBase {
 
         // Normalize input to lowercase for better matching
         String lowerQuestion = question.toLowerCase().trim();
-        
-       
+
         return Constants.MSG_NOT_FOUND;
     }
 
@@ -62,7 +83,7 @@ public class ChatBotBase {
     /**
      * Updates an existing chatbot answer.
      *
-     * @param question The question whose answer needs to be updated.
+     * @param question  The question whose answer needs to be updated.
      * @param newAnswer The new answer to update.
      * @return true if the update was successful, false otherwise.
      */
