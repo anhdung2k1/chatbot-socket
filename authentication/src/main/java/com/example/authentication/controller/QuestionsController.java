@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/authentication/questions")
+@RequestMapping("/api/v1/authentication/question")
 @RequiredArgsConstructor
 public class QuestionsController {
 
     private final QuestionsService questionsService;
 
     // Get all questions
-    @GetMapping
-    public ResponseEntity<List<Questions>> getAllQuestions() {
-        return ResponseEntity.ok(questionsService.getAllQuestions());
+    @GetMapping("/{subjectId}")
+    public ResponseEntity<List<Questions>> getAllQuestions(@PathVariable Long subjectId) {
+        return ResponseEntity.ok(questionsService.getAllQuestions(subjectId));
     }
 
     // Get question by ID

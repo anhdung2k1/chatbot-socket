@@ -11,5 +11,4 @@ public class Questions {
     private Long questionsId;
     private String question;
     private String answer;
-    private Subjects subjects;
 }

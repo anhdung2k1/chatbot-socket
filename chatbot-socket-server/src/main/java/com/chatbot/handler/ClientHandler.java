@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import com.chatbot.ChatBotBase;
+import com.chatbot.services.ChatBotServerService;
+import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
+import com.chatbot.utils.PatternChatBot;
 
 public class ClientHandler implements Runnable {
     private final Socket socket;
@@ -20,24 +22,35 @@ public class ClientHandler implements Runnable {
     public void run() {
         Log.info("Handling new client: {}", socket.getInetAddress());
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+        try (
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            String request, response;
 
-            out.println("Welcome to the Medical Chatbot! Select a question.");
-            out.flush(); // Ensures the welcome message is sent immediately
+            while ((request = in.readLine()) != null) {
+                Log.info("Received request: {}", request);
+                try {
+                    String pattern = PatternChatBot.getPattern(request);
+                    String patternValue = PatternChatBot.getValuePattern(request);
 
-            String question;
-            while ((question = in.readLine()) != null) {
-                if (question.equalsIgnoreCase("exit")) {
-                    out.println("Goodbye!");
-                    out.flush();
-                    break;
+                    response = switch (pattern.toUpperCase()) {
+                        case PatternChatBot.SIGN_IN ->
+                                PatternChatBot.SIGN_IN + "|" + ChatBotServerService.authRequest(patternValue, true);
+                        case PatternChatBot.SIGN_UP ->
+                                PatternChatBot.SIGN_UP + "|" + ChatBotServerService.authRequest(patternValue, false);
+                        default -> {
+                            Log.warn("Unknown pattern received: {}", pattern);
+                            yield "ERROR|Unknown request pattern: " + pattern;
+                        }
+                    };
+
+                    Log.info("Server Response to Client: {}", response);
+                    out.println(response);
+                } catch (Exception e) {
+                    Log.error("Error processing request '{}'", request, e);
+                    out.println("ERROR|Failed to process request");
                 }
-
-                String answer = ChatBotBase.getAnswer(question);
-                out.println(answer);
-                out.flush(); // Ensure the answer is immediately sent to the client
-                Log.info("Client asked: \"{}\" | Responded: \"{}\"", question, answer);
             }
         } catch (IOException e) {
             Log.warn("Error handling client: {}", socket.getInetAddress(), e);
