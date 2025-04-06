@@ -40,9 +40,9 @@ public class QuestionsServiceImpl implements QuestionsService {
     }
 
     @Override
-    public List<Questions> getAllQuestions() {
+    public List<Questions> getAllQuestions(Long subjectId) {
         log.info("Fetching all Questions");
-        List<Questions> questions = questionsRepository.findAll().stream()
+        List<Questions> questions = questionsRepository.findAllQuestionsWithSubjectId(subjectId).stream()
                         .map(questionsMapper::toDTO)
                         .collect(Collectors.toList());
         log.info("Retrieved {} questions", questions.size());

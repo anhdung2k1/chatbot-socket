@@ -14,7 +14,7 @@ CREATE TABLE questions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE(subject_id, question),
-    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
 );
 
 -- Insert Subjects

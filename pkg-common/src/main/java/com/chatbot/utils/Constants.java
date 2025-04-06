@@ -7,16 +7,14 @@ public class Constants {
     public static final int THREAD_POOL_ALIVE = getEnvInt("THREAD_POOL_ALIVE", 5);
     public static final int THREAD_POOL_MAX = getEnvInt("THREAD_POOL_MAX", 100);
     public static final long THREAD_IDLE_TIME = getEnvLong("THREAD_IDLE_TIME", 300L);
-    // File Paths
-    public static final String CHATBOT_MEDICAL_FILE = "conversations/chatbot-medical.json";
+    // API Config
+    public static final String API_HOST = getEnv("API_HOST", "localhost");
+    public static final int API_PORT = getEnvInt("API_PORT", 9090);
+    public static final String API_URL = String.format("http://%s:%s/api/v1/authentication", API_HOST, API_PORT);
     public final static String MSG_NOT_FOUND = "Sorry, I don't have an answer for that question.";
-    // DB Config
-    public static final String DB_HOST = getEnv("DB_HOST", "localhost");
-    public static final int DB_PORT = getEnvInt("DB_PORT", 3306);
-    public static final String DB_NAME = getEnv("DB_NAME", "chatbot");
-    public static final String DB_USERNAME = getEnv("DB_USERNAME", "chatbot");
-    public static final String DB_PASSWORD = getEnv("DB_PASSWORD", "chatbot");
-    public static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s", DB_HOST, DB_PORT, DB_NAME);
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILED = "FAILED";
+
     /**
      * Helper method to get environment variable as int
      */

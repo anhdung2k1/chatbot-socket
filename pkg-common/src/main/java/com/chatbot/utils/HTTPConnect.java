@@ -1,21 +1,23 @@
 package com.chatbot.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
 public class HTTPConnect {
-
+    private ObjectMapper objectMapper = new ObjectMapper();
     private String token;
 
     // Method to perform the POST request for authentication (sign-in/sign-up)
     public String authenticate(String url, String jsonPayload) throws IOException {
         String response = sendRequest(url, "POST", jsonPayload);
-        if (response != null) {
-            token = extractToken(response);  // Extract and store the JWT token
-        }
-        return response;
+        JsonNode jsonNode = objectMapper.readTree(response);
+        token = jsonNode.get("token").asText();
+        return token;
     }
 
     // Helper method to send HTTP requests (GET, POST, PUT, DELETE)
@@ -57,14 +59,6 @@ public class HTTPConnect {
         }
 
         return response.toString();
-    }
-
-    // Helper method to extract the JWT token from the response (based on your provided JSON response structure)
-    private String extractToken(String jsonResponse) {
-        // Extract the token from the JSON response
-        int tokenStartIndex = jsonResponse.indexOf("\"token\":\"") + 9;
-        int tokenEndIndex = jsonResponse.indexOf("\"", tokenStartIndex);
-        return jsonResponse.substring(tokenStartIndex, tokenEndIndex);
     }
 
     // Helper method to close resources (connections, readers, writers)

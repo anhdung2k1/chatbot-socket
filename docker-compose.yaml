@@ -12,7 +12,7 @@ services:
       - sk-net
 
   mysql:
-    image: mysql:latest
+    image: mysql:8.0
     container_name: mysql
     restart: always
     environment:
@@ -24,7 +24,7 @@ services:
       - "3306:3306"
     volumes:
       - chatbot_db_data:/var/lib/mysql
-      - ./sql/chatbot.sql:/docker-entrypoint-initdb.d/chatbot.sql
+      - ./sql:/docker-entrypoint-initdb.d
     networks:
       - sk-net
 
@@ -35,7 +35,7 @@ services:
       context: ./authentication
       dockerfile: ./Dockerfile
     ports:
-      - 9090:9090
+      - "9090:9090"
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
