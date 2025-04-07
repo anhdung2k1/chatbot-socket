@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-
 import com.chatbot.utils.Constants;
 import com.chatbot.utils.Log;
 import com.chatbot.utils.PatternChatBot;

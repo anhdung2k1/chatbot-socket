@@ -119,7 +119,7 @@ public class SignUpPage {
                     JOptionPane.showMessageDialog(frame, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     SwingUtilities.invokeLater(() -> {
                         frame.dispose();
-                        new MedicalChatbotUI();
+                        new ChatbotUI();
                     });
                 } else {
                     SwingUtilities.invokeLater(() -> {

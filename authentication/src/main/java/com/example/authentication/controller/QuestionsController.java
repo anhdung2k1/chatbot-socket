@@ -16,7 +16,7 @@ public class QuestionsController {
     private final QuestionsService questionsService;
 
     // Get all questions
-    @GetMapping("/{subjectId}")
+    @GetMapping("/subject/{subjectId}")
     public ResponseEntity<List<Questions>> getAllQuestions(@PathVariable Long subjectId) {
         return ResponseEntity.ok(questionsService.getAllQuestions(subjectId));
     }

@@ -83,7 +83,7 @@ public class SignInPage {
                 if ((response.equalsIgnoreCase(Constants.SUCCESS))) {
                     SwingUtilities.invokeLater(() -> {
                         frame.dispose();
-                        new MedicalChatbotUI();
+                        new ChatbotUI();
                     });
                 } else {
                     SwingUtilities.invokeLater(() -> {

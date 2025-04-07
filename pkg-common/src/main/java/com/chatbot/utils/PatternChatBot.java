@@ -10,6 +10,7 @@ public class PatternChatBot {
     public static final String SIGN_UP = "SIGN_UP";
     public static final String ASK_QUESTION = "ASK_QUESTION";
     public static final String GET_ALL_QUESTIONS = "GET_ALL_QUESTIONS";
+    public static final String GET_ALL_SUBJECTS = "GET_ALL_SUBJECTS";
 
     public static String getPattern(String pattern) {
         int posPattern = pattern.indexOf("|");

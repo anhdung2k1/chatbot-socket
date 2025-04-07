@@ -39,6 +39,10 @@ public class ClientHandler implements Runnable {
                                 PatternChatBot.SIGN_IN + "|" + ChatBotServerService.authRequest(patternValue, true);
                         case PatternChatBot.SIGN_UP ->
                                 PatternChatBot.SIGN_UP + "|" + ChatBotServerService.authRequest(patternValue, false);
+                        case PatternChatBot.GET_ALL_SUBJECTS ->
+                                PatternChatBot.GET_ALL_SUBJECTS + "|" + ChatBotServerService.getAllSubjects(patternValue);
+                        case PatternChatBot.ASK_QUESTION ->
+                                PatternChatBot.ASK_QUESTION + "|" + ChatBotServerService.getQuestionAndAnswerById(patternValue);
                         default -> {
                             Log.warn("Unknown pattern received: {}", pattern);
                             yield "ERROR|Unknown request pattern: " + pattern;

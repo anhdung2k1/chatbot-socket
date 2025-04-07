@@ -1,0 +1,6 @@
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0Mzk0ODU5NSwiZXhwIjoxNzQzOTYyOTk1fQ.5nLNAbJJRVvyWbCW-hqfnT4DvuVNMPeb7TogqRJk19A" -H "Content-Type: application/json" http://localhost:9090/api/v1/authentication/question/1 | jq . | tee -a result.json
+{
+  "questionsId": 1,
+  "question": "What are the common symptoms of the flu?",
+  "answer": "Common symptoms of the flu include fever, chills, cough, sore throat, runny nose, muscle aches, and fatigue."
+}
