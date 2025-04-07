@@ -39,8 +39,22 @@ public class ClientHandler implements Runnable {
                                 PatternChatBot.SIGN_IN + "|" + ChatBotServerService.authRequest(patternValue, true);
                         case PatternChatBot.SIGN_UP ->
                                 PatternChatBot.SIGN_UP + "|" + ChatBotServerService.authRequest(patternValue, false);
+                        case PatternChatBot.SIGN_OUT ->
+                                PatternChatBot.SIGN_OUT + "|" + ChatBotServerService.signOut();
                         case PatternChatBot.GET_ALL_SUBJECTS ->
                                 PatternChatBot.GET_ALL_SUBJECTS + "|" + ChatBotServerService.getAllSubjects(patternValue);
+                        case PatternChatBot.CREATE_SUBJECT ->
+                                PatternChatBot.CREATE_SUBJECT + "|" + ChatBotServerService.createNewSubject(patternValue);
+                        case PatternChatBot.UPDATE_SUBJECT ->
+                                PatternChatBot.UPDATE_SUBJECT + "|" + ChatBotServerService.updateSubject(patternValue);
+                        case PatternChatBot.DELETE_SUBJECT ->
+                                PatternChatBot.DELETE_SUBJECT + "|" + ChatBotServerService.deleteSubject(patternValue);
+                        case PatternChatBot.CREATE_QUESTION ->
+                                PatternChatBot.CREATE_QUESTION + "|" + ChatBotServerService.createNewQuestion(patternValue);
+                        case PatternChatBot.UPDATE_QUESTION ->
+                                PatternChatBot.UPDATE_QUESTION + "|" + ChatBotServerService.updateQuestion(patternValue);
+                        case PatternChatBot.DELETE_QUESTION ->
+                                PatternChatBot.DELETE_QUESTION + "|" + ChatBotServerService.deleteQuestion(patternValue);
                         case PatternChatBot.ASK_QUESTION ->
                                 PatternChatBot.ASK_QUESTION + "|" + ChatBotServerService.getQuestionAndAnswerById(patternValue);
                         default -> {

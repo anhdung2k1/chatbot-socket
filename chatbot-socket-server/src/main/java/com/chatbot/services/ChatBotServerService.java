@@ -9,6 +9,7 @@ import com.chatbot.utils.HTTPConnect;
 import com.chatbot.utils.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -41,6 +42,14 @@ public class ChatBotServerService {
             Log.error("Error in authRequest: {}", e.getMessage());
             return Constants.FAILED;
         }
+    }
+
+    public static String signOut() throws Exception {
+        httpConnect.clearToken();
+        if (httpConnect.getToken() != null) {
+            return Constants.FAILED;
+        }
+        return Constants.SUCCESS;
     }
 
     public static boolean verifyToken(String token) {
@@ -90,6 +99,128 @@ public class ChatBotServerService {
         } catch (Exception e) {
             Log.error("Error retrieving question and answer: {}", e.getMessage());
             return Constants.MSG_NOT_FOUND;
+        }
+    }
+
+    public static String createNewSubject(String request) throws Exception {
+        try {
+            String apiUrl = Constants.API_URL + "/subject";
+            String response = httpConnect.sendPost(apiUrl, request);
+            Log.info("Response for createNewSubject: {}", response);
+            if (response.isEmpty()) {
+                Log.error("Failed to create new Subject {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to create new Subject: {}", e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
+    public static String updateSubject(String request) throws Exception {
+        try {
+            JsonNode node = objectMapper.readTree(request);
+            long subjectId = node.get("subjectId").asLong();
+            String subjectName = node.get("subjectName").asText();
+            String subjectDescription = node.get("subjectDescription").asText();
+            ObjectNode payload = objectMapper.createObjectNode();
+            payload.put("subjectName", subjectName);
+            payload.put("subjectDescription", subjectDescription);
+
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
+            String apiUrl = Constants.API_URL + "/subject/" + subjectId;
+            String response = httpConnect.sendPut(apiUrl, jsonPayload);
+            Log.info("Response for updateSubject: {}", response);
+            if (response.isEmpty()) {
+                Log.error("Failed to updateSubject {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to update Subject: {}", e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
+    public static String deleteSubject(String request) throws Exception {
+        try {
+            JsonNode node = objectMapper.readTree(request);
+            long subjectId = node.get("subjectId").asLong();
+            String apiUrl = Constants.API_URL + "/subject/" + subjectId;
+
+            String response = httpConnect.sendDelete(apiUrl);
+            Log.info("Response for subject ID {}: {}", subjectId, response);
+            if (response.isEmpty()) {
+                Log.error("Failed to deleteSubject {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to deleteSubject: {}", e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
+    public static String createNewQuestion(String request) throws Exception {
+        try {
+            String apiUrl = Constants.API_URL + "/question";
+            String response = httpConnect.sendPost(apiUrl, request);
+            Log.info("Response for createNewQuestion: {}", response);
+            if (response.isEmpty()) {
+                Log.error("Failed to create new Question {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to create new Question: {}", e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
+    public static String updateQuestion(String request) throws Exception {
+        try {
+            JsonNode node = objectMapper.readTree(request);
+            long questionId = node.get("questionsId").asLong();
+            String question = node.get("question").asText();
+            String answer = node.get("answer").asText();
+            ObjectNode payload = objectMapper.createObjectNode();
+            payload.put("question", question);
+            payload.put("answer", answer);
+
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
+            String apiUrl = Constants.API_URL + "/question/" + questionId;
+            String response = httpConnect.sendPut(apiUrl, jsonPayload);
+            Log.info("Response for updateQuestion: {}", response);
+            if (response.isEmpty()) {
+                Log.error("Failed to updateQuestion: {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to updateQuestion: {}", e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
+    public static String deleteQuestion(String request) throws Exception {
+        try {
+            JsonNode node = objectMapper.readTree(request);
+            long questionId = node.get("questionsId").asLong();
+            String apiUrl = Constants.API_URL + "/question/" + questionId;
+
+            String response = httpConnect.sendDelete(apiUrl);
+            Log.info("Response for question ID {}: {}", questionId, response);
+            if (response.isEmpty()) {
+                Log.error("Failed to deleteQuestion {}", request);
+                return Constants.FAILED;
+            }
+            return Constants.SUCCESS;
+        } catch (Exception e) {
+            Log.error("Error to deleteQuestion: {}", e.getMessage());
+            return Constants.FAILED;
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.authentication.service.implement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.authentication.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 
 import com.example.authentication.entity.QuestionsEntity;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionsServiceImpl implements QuestionsService {
 
     private final QuestionsRepository questionsRepository;
+    private final SubjectRepository subjectRepository;
     private final QuestionsMapper questionsMapper;
 
     @Override
@@ -31,6 +33,9 @@ public class QuestionsServiceImpl implements QuestionsService {
         
         // Convert to Entity
         QuestionsEntity questionEntity = questionsMapper.toEntity(question);
+        log.info("createQuestion() question: {}", question);
+        // Because the client sent with subjectID not whole subject
+
         questionsRepository.save(questionEntity);
 
         // Convert back to DTO

@@ -20,6 +20,18 @@ public class HTTPConnect {
         return token;
     }
 
+    public void clearToken() throws IOException {
+        setToken(null);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     // Helper method to send HTTP requests (GET, POST, PUT, DELETE)
     private String sendRequest(String url, String method, String jsonPayload) throws IOException {
         HttpURLConnection connection = null;

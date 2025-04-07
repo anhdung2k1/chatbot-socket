@@ -1,7 +1,6 @@
 package com.example.authentication.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.authentication.model.Subjects;
 import com.example.authentication.service.interfaces.SubjectService;
@@ -11,13 +10,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 
 @RestController
@@ -42,7 +34,7 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.createSubject(subject));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Subjects> updateSubject(@PathVariable Long id, @RequestBody Subjects subject) {
         return ResponseEntity.ok(subjectService.updateSubject(id, subject));
     }

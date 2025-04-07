@@ -17,10 +17,12 @@ public class ChatBotClientService {
 
     private ChatBotClientService() {
         try {
-            socket = new Socket(Constants.SERVER_HOST, Constants.SERVER_PORT);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-            Log.info("Connected to server at {}:{}", Constants.SERVER_HOST, Constants.SERVER_PORT);
+            if (!isConnected()) {
+                socket = new Socket(Constants.SERVER_HOST, Constants.SERVER_PORT);
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                out = new PrintWriter(socket.getOutputStream(), true);
+                Log.info("Connected to server at {}:{}", Constants.SERVER_HOST, Constants.SERVER_PORT);
+            }
         } catch (IOException e) {
             Log.error("Connection error: {}", e.getMessage());
         }
@@ -53,5 +55,15 @@ public class ChatBotClientService {
 
     public boolean isConnected() {
         return socket != null && socket.isConnected() && !socket.isClosed();
+    }
+
+    public String sendAndReceive(String pattern, String jsonValue) {
+        try {
+            sendMessage(pattern, jsonValue);
+            return receiveMessage(pattern);
+        } catch (IOException e) {
+            Log.error("sendAndReceive error ({}): {}", pattern, e.getMessage());
+            return null;
+        }
     }
 }

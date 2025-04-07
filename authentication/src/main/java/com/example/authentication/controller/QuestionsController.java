@@ -34,7 +34,7 @@ public class QuestionsController {
     }
 
     // Update question by ID
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Questions> updateQuestion(@PathVariable Long id, @RequestBody Questions question) {
         return ResponseEntity.ok(questionsService.updateQuestions(id, question));
     }
