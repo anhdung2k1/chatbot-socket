@@ -30,7 +30,7 @@ services:
 
   authentication:
     image: authentication:latest
-    container_name: sk_authentication
+    container_name: authentication
     build:
       context: ./authentication
       dockerfile: ./Dockerfile
@@ -50,18 +50,16 @@ services:
 
   server:
     image: server:latest
-    container_name: sk_server
+    container_name: server
     build:
       context: ./chatbot-socket-server
       dockerfile: Dockerfile
     depends_on:
       - builder
-      - mysql
+      - authentication
     environment:
-      DB_HOST: mysql
-      DB_USER: chatbot
-      DB_PASSWORD: chatbot
-      DB_NAME: chatbot
+      API_HOST: authentication
+      API_PORT: 9090
     ports:
       - "8000:8000"
     networks:
